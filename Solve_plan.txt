@@ -1,0 +1,17 @@
+Plan to Solve problem:
+
+1) Explore data to get the most important attributes using T-test and ANOVA. 
+   Divide population by tag ( failure = 0, failure = 1 ), and see which attributes
+display a significant different distribution in each group. Dimension of the problem should decrease notably.
+
+Done with T-test! Run exploration.py to see output of this stage (and be patient, might take ~ 5min) 
+
+2) Get the optimum linear combination of relevant attributes by doing a PCA. See wether dimensionality can be brought down even more (Maybe not necessary)
+
+3) Implement algorithms to predict failure:
+	- Regression
+	- k-neares neighbors
+
+4) Compare Quality of Solutions with ROC curve
+
+

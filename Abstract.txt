@@ -1,0 +1,6 @@
+Predicting Hard Drive Failure:
+The idea is to develop a model to predict when a HD is going to fail. This dataset contains basic hard drive information and 90 columns or raw and normalized values of 45 different HD built-in indicators. Each row represents a daily snapshot of one hard drive. Data size is 200MB, and there is some discussion about how to model the data.
+
+Data cointains ~ 3M rows and 215 failures, looks like a simple model with medium accuracy can be trained.
+
+URL: https://www.kaggle.com/backblaze/hard-drive-test-data
