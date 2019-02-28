@@ -6,12 +6,16 @@ display a significant different distribution in each group. Dimension of the pro
 
 Done with T-test! Run exploration.py to see output of this stage (and be patient, might take ~ 5min) 
 
-2) Get the optimum linear combination of relevant attributes by doing a PCA. See wether dimensionality can be brought down even more (Maybe not necessary)
+Optional) Get the optimum linear combination of relevant attributes by doing a PCA. See wether dimensionality can be brought down even more (Maybe not necessary)
 
 3) Implement algorithms to predict failure:
-	- Regression
+	- Logistic Regresion ( DONE! )
+	- ADA Boosting
+	- Random Forest
 	- k-neares neighbors
 
-4) Compare Quality of Solutions with ROC curve
+4) Cross Validation (75%, 25%), ver ROC curve y AUC
+
+5) Compare Quality of Solutions with ROC curve
 
 

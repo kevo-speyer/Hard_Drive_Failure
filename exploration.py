@@ -5,28 +5,45 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import random
 
-def train_logistic_regresion(neg_data,pos_data,rel_att_2):
-    """ input data, output trained model """
+def standarize_data(neg_data,pos_data,rel_att):
+    """ Standarize  and filter data to feed models, input is:
+    negative data frame
+    positive data frame
+    list of relevant attributes to use to fit
+    output is 
+    X: Attributes
+    Y: Labels """
     from sklearn.linear_model import LogisticRegression
     from sklearn import datasets
     from sklearn.preprocessing import StandardScaler
 
     rel_att_2=[9, 15, 19, 37, 41, 49] # keep relevant attributes
 
-    pos_data_array = pos_data.iloc[:,rel_att_2].values   
-    neg_data_array = neg_data.iloc[:,rel_att_2].values
+    pos_data_array = pos_data.iloc[:,rel_att].values   
+    neg_data_array = neg_data.iloc[:,rel_att].values
 
-    X_data = np.zeros([pos_data_array.shape[0]+neg_data_array.shape[0],len(rel_att_2)])
-    X_data[0:neg_data_array.shape[0],:] = neg_data_array
-    X_data[neg_data_array.shape[0]:,:] = pos_data_array
+    n_neg_data = neg_data.shape[0]
+    n_tot_data = n_neg_data + pos_data.shape[0]
 
-    Y_data = np.zeros(pos_data_array.shape[0]+neg_data_array.shape[0])   
-    Y_data[0:neg_data_array.shape[0]] = 0
-    Y_data[neg_data_array.shape[0]:] = 1
+    X_data = np.zeros([n_tot_data,len(rel_att)])
+    X_data[0:n_neg_data,:] = neg_data_array
+    X_data[n_neg_data:,:] = pos_data_array
+
+    Y_data = np.zeros(n_tot_data)   
+    Y_data[0:n_neg_data] = 0
+    Y_data[n_neg_data:] = 1
 
     #Rescale attributes between  -1 and 1
     scaler = StandardScaler()    
     X_std = scaler.fit_transform(X_data) 
+
+    return X_std, Y_data
+
+def train_logistic_regresion(X_std, Y_data):
+    """ input data, output trained model """
+    from sklearn.linear_model import LogisticRegression
+    from sklearn import datasets
+    from sklearn.preprocessing import StandardScaler
 
     # choose class_weight='balanced', to give more weight to positive data
     clf = LogisticRegression(random_state=0, class_weight='balanced')
@@ -57,6 +74,12 @@ def plt_ROC_curve(model, X_std, Y_data):
     plt.xlabel('False Positive / (Flase Pos + True Negative)')
     plt.ylabel('True Positive / (False Negative + True Positive)')
     plt.show()
+
+def get_AUC( Y_data, model, X_std):
+    from sklearn import metric
+    fpr, tpr, thresholds = metrics.roc_curve(Y_data,model.predict_proba(X_std)[:,1])
+
+    return metrics.auc(fpr, tpr)
 
 def read_discr_data():
     """ Read data, keep just 1 model and return 2 sets discriminated by label"""
