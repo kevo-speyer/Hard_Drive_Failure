@@ -5,14 +5,29 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import random
 
-def standarize_data(neg_data,pos_data,rel_att):
-    """ Standarize  and filter data to feed models, input is:
-    negative data frame
-    positive data frame
-    list of relevant attributes to use to fit
-    output is 
-    X: Attributes
-    Y: Labels """
+def cross_validation(X_data, Y_data, n_trials = 10):
+    """ Perform cross validation of model using ROC AUC
+    input is X_data (attributes), Y_data (label 0 or 1), and optional number of trials
+    output is AUC mean and AUC std dev"""
+    from sklearn.model_selection import train_test_split
+    ROC_AUC = np.zeros(n_trials)
+    for i in range(n_trials):
+        X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, test_size=0.25)
+        X_std_train = standarize_data(X_train)
+        X_std_test = standarize_data(X_test)
+
+        model_train_2 = train_logistic_regresion(X_std_train, Y_train)
+    
+        ROC_AUC[i] = get_AUC(X_std_test, Y_test, model_train_2)
+
+    print "The AUC of the ROC curve is between:"
+    print ROC_AUC.mean() - 2*ROC_AUC.std(), " and ", ROC_AUC.mean() + 2*ROC_AUC.std()
+    print "With a 95% confidence"
+    return ROC_AUC.mean(), ROC_AUC.std()
+
+def get_rel_data(pos_data, neg_data, rel_att):
+    """Input: Raw negarive, raw positive data, list of columns to select
+    Output: X_data, Y_data """
     from sklearn.linear_model import LogisticRegression
     from sklearn import datasets
     from sklearn.preprocessing import StandardScaler
@@ -33,11 +48,53 @@ def standarize_data(neg_data,pos_data,rel_att):
     Y_data[0:n_neg_data] = 0
     Y_data[n_neg_data:] = 1
 
+    return X_data, Y_data
+
+def standarize_data(X_data):
+    """ Standarize input is:
+    negative data frame
+    positive data frame
+    list of relevant attributes to use to fit
+    output is 
+    X: Attributes
+    Y: Labels """
+    from sklearn.linear_model import LogisticRegression
+    from sklearn import datasets
+    from sklearn.preprocessing import StandardScaler
+
+    rel_att_2=[9, 15, 19, 37, 41, 49] # keep relevant attributes
+
     #Rescale attributes between  -1 and 1
     scaler = StandardScaler()    
     X_std = scaler.fit_transform(X_data) 
 
-    return X_std, Y_data
+    return X_std
+
+def train_RF(X_train, Y_train):
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.datasets import make_classification
+    clf = RandomForestClassifier(n_estimators=100, max_depth=2,random_state=0)
+    clf.fit(X_train, Y_train)
+    
+    return clf
+
+def train_adaboost(X_data, Y_data):
+    from sklearn.ensemble import AdaBoostClassifier
+    from sklearn.tree import DecisionTreeClassifier        
+    bdt = AdaBoostClassifier(DecisionTreeClassifier(),n_estimators=15)
+    
+    bdt.fit(X_data, Y_data)
+    
+    return bdt
+
+def train_knn(X_data, Y_data, n_neigh = 5):
+    """input is data X_data and label Y_data
+    output is a trained knn model"""
+    from sklearn.neighbors import NearestNeighbors
+    neigh = NearestNeighbors(n_neighbors=1)
+    neigh.fit(X_data,Y_data)
+
+    return neigh
 
 def train_logistic_regresion(X_std, Y_data):
     """ input data, output trained model """
@@ -53,15 +110,16 @@ def train_logistic_regresion(X_std, Y_data):
 
     return model
 
-def plt_ROC_curve(model, X_std, Y_data):
+def plt_ROC_curve(model, X_std, Y_data, n_points=21):
     from sklearn.linear_model import LogisticRegression
     from sklearn import datasets
     from sklearn.preprocessing import StandardScaler
-   
+    from sklearn.metrics import confusion_matrix
+
     fp_ls = []   
     fn_ls = []
    
-    for thrshld in np.linspace(0.0, 1.0, num=201):
+    for thrshld in np.linspace(0.0, 1.0, num=n_points):
         Y_pred = ((model.predict_proba(X_std))[:,1]+thrshld).astype(int)
         con_mat = confusion_matrix(Y_data, Y_pred)
         falso_negativo = con_mat[1,0]/float(sum(con_mat[1,:]))
@@ -75,8 +133,8 @@ def plt_ROC_curve(model, X_std, Y_data):
     plt.ylabel('True Positive / (False Negative + True Positive)')
     plt.show()
 
-def get_AUC( Y_data, model, X_std):
-    from sklearn import metric
+def get_AUC(X_std, Y_data, model):
+    from sklearn import metrics
     fpr, tpr, thresholds = metrics.roc_curve(Y_data,model.predict_proba(X_std)[:,1])
 
     return metrics.auc(fpr, tpr)
@@ -228,6 +286,25 @@ def t_test(data):
     neg_data = data[data.failure == 0]
     pos_data = data[data.failure == 1]
     ttest_ind(neg_data.iloc[:,12],pos_data.iloc[:,12])
+
+
+def main():
+
+    #WORKFLOW:
+    #import this routines
+    from exploration import *
+    
+    # read data
+    pos_data, neg_data = read_discr_data()
+    
+    # get relevant attributes, discard the ones that are not important
+    rel_att = get_relevant_att(pos_data, neg_data) 
+    
+    # stuck with relevant data discard not relevant data
+    X_data, Y_data = get_rel_data(pos_data, neg_data, rel_att)  
+    
+    # choose a model and perform cross validation
+    cross_validation(X_data, Y_data)
 
 
 #rel_att = get_relevant_att()

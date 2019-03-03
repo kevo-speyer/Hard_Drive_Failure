@@ -8,14 +8,10 @@ Done with T-test! Run exploration.py to see output of this stage (and be patient
 
 Optional) Get the optimum linear combination of relevant attributes by doing a PCA. See wether dimensionality can be brought down even more (Maybe not necessary)
 
-3) Implement algorithms to predict failure:
-	- Logistic Regresion ( DONE! )
-	- ADA Boosting
-	- Random Forest
-	- k-neares neighbors
-
-4) Cross Validation (75%, 25%), ver ROC curve y AUC
-
-5) Compare Quality of Solutions with ROC curve
+3 y 4) Implement algorithms to predict failure:
+   - Logistic Regresion ( DONE! works fairly good 0.78 +/- 0.04 AUC in CV)
+   - ADA Boosting ( DONE! Shit in CV AUC < 0.5 ) 
+   - Random Forest ( DONE! Works good AUC in CV = 0.78 +/- 0.04, ROC looks weird)
+   - k-neares neighbors ( Training is too slow ... )
 
 
