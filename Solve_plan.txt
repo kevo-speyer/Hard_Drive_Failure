@@ -10,8 +10,8 @@ Optional) Get the optimum linear combination of relevant attributes by doing a P
 
 3 y 4) Implement algorithms to predict failure:
    - Logistic Regresion ( DONE! works fairly good 0.78 +/- 0.04 AUC in CV)
-   - ADA Boosting ( DONE! Shit in CV AUC < 0.5 ) 
+   - ADA Boosting ( DONE! 0.71 +/- 0.05 )
    - Random Forest ( DONE! Works good AUC in CV = 0.78 +/- 0.04, ROC looks weird)
    - k-neares neighbors ( Training is too slow ... )
-
+   - Naive Bayes (DONE AUC 0.76 +/- 0.03)	
 

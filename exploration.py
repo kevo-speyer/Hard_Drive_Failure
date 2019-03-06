@@ -5,7 +5,27 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import random
 
-def cross_validation(X_data, Y_data, n_trials = 10):
+def cross_validation(X_data, Y_data, model, n_trials = 10):
+    """ Perform cross validation of model using ROC AUC
+    input is X_data (attributes), Y_data (label 0 or 1), and optional number of trials
+    output is AUC mean and AUC std dev"""
+    from sklearn.model_selection import train_test_split
+    ROC_AUC = np.zeros(n_trials)
+    for i in range(n_trials):
+        X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, test_size=0.25)
+        #X_std_train = standarize_data(X_train)
+        #X_std_test = standarize_data(X_test)
+
+        model_train_2 = model.fit(X_train, Y_train)
+    
+        ROC_AUC[i] = get_AUC(X_test, Y_test, model_train_2)
+
+    print "The AUC of the ROC curve is between:"
+    print ROC_AUC.mean() - 2*ROC_AUC.std(), " and ", ROC_AUC.mean() + 2*ROC_AUC.std()
+    print "With a 95% confidence"
+    return ROC_AUC.mean(), ROC_AUC.std()
+
+def cross_validation_LR(X_data, Y_data, n_trials = 10):
     """ Perform cross validation of model using ROC AUC
     input is X_data (attributes), Y_data (label 0 or 1), and optional number of trials
     output is AUC mean and AUC std dev"""
@@ -78,14 +98,29 @@ def train_RF(X_train, Y_train):
     
     return clf
 
+def train_Naive_Bayes(X_train, Y_train):
+    from sklearn.naive_bayes import GaussianNB
+    gnb = GaussianNB()   
+    gnb.fit(X_train, Y_train)     
+    
+    return gnb
+
+
 def train_adaboost(X_data, Y_data):
     from sklearn.ensemble import AdaBoostClassifier
     from sklearn.tree import DecisionTreeClassifier        
-    bdt = AdaBoostClassifier(DecisionTreeClassifier(),n_estimators=15)
+    #bdt = AdaBoostClassifier(DecisionTreeClassifier(),n_estimators=15)
+
+    dt_stump = DecisionTreeClassifier(max_depth=1, min_samples_leaf=1)
+    ada_real = AdaBoostClassifier(                                            
+    base_estimator=dt_stump,
+    learning_rate=1,
+    n_estimators=50,
+    algorithm="SAMME.R")    
+
+    ada_real.fit(X_data, Y_data)
     
-    bdt.fit(X_data, Y_data)
-    
-    return bdt
+    return ada_real
 
 def train_knn(X_data, Y_data, n_neigh = 5):
     """input is data X_data and label Y_data
@@ -288,24 +323,6 @@ def t_test(data):
     ttest_ind(neg_data.iloc[:,12],pos_data.iloc[:,12])
 
 
-def main():
-
-    #WORKFLOW:
-    #import this routines
-    from exploration import *
-    
-    # read data
-    pos_data, neg_data = read_discr_data()
-    
-    # get relevant attributes, discard the ones that are not important
-    rel_att = get_relevant_att(pos_data, neg_data) 
-    
-    # stuck with relevant data discard not relevant data
-    X_data, Y_data = get_rel_data(pos_data, neg_data, rel_att)  
-    
-    # choose a model and perform cross validation
-    cross_validation(X_data, Y_data)
-
 
 #rel_att = get_relevant_att()
 #print "Relavant attributes are (by index):", rel_att
@@ -335,5 +352,23 @@ def main():
 #data.groupby('failure').mean()
 #
 
+
+def main():
+
+    #WORKFLOW:
+    #import this routines
+    from exploration import *
+    
+    # read data
+    pos_data, neg_data = read_discr_data()
+    
+    # get relevant attributes, discard the ones that are not important
+    rel_att = get_relevant_att(pos_data, neg_data) 
+    
+    # stuck with relevant data discard not relevant data
+    X_data, Y_data = get_rel_data(pos_data, neg_data, rel_att)  
+    
+    # choose a model and perform cross validation
+    cross_validation(X_data, Y_data)
 
 
