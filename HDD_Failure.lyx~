@@ -82,13 +82,38 @@ Saving Backup Space with Machine Learning
 \end_layout
 
 \begin_layout Author
-Kevin Speyer
+Kevin Speyer and Hernán Resnizky
+\end_layout
+
+\begin_layout Address
+Cybertec
 \end_layout
 
 \begin_layout Abstract
-We use real data from Hard Drive Discs to train a model and predict the
- probability that a HDD will fail.
- We achieve a high accuracy to mark the 50% most probable disk to fail.
+We use real data from the Self-Monitoring, Analysis and Reporting Technology
+ of Hard Drive Discs to train a machine learning model and predict the probabili
+ty of failure of HDD.
+ After comparing various models, including Random Forest, Naive Bayes, Nearest
+ Neighbors among others, we came up with a high accuracy (area under the
+ ROC curve 
+\begin_inset Formula $=0.78\pm0.04$
+\end_inset
+
+) model, which is fast to train and predict.
+ The data is specially challenging, given that there is a high imbalance
+ between positive and negative classes 
+\begin_inset Formula $positive/negative<10^{-4}$
+\end_inset
+
+, and there are few positive cases.
+ 
+\end_layout
+
+\begin_layout Abstract
+We propose a smart implementation of the model to drastically reduce the
+ number of HDD used to backup data, with a small increase in the risk of
+ losing data.
+ achieve a high accuracy to mark the 50% most probable disk to fail.
  We propose an economic, smart, green friendly way to backup data, where
  less than 50% of the discs are used compared to normal backup methods.
  Backing up only the 50% of data in 

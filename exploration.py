@@ -33,9 +33,9 @@ def cross_validation_LR(X_data, Y_data, n_trials = 10):
     ROC_AUC = np.zeros(n_trials)
     for i in range(n_trials):
         X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, test_size=0.25)
-        X_std_train = standarize_data(X_train)
-        X_std_test = standarize_data(X_test)
-
+        X_std_train = ( X_train - X_train.mean(0) ) / X_train.std(0) #standarize_data(X_train)
+        #X_std_test = standarize_data(X_test)
+        X_std_test = ( X_test - X_train.mean(0) ) / X_train.std(0)
         model_train_2 = train_logistic_regresion(X_std_train, Y_train)
     
         ROC_AUC[i] = get_AUC(X_std_test, Y_test, model_train_2)
@@ -150,20 +150,23 @@ def plt_ROC_curve(model, X_std, Y_data, n_points=21):
     from sklearn import datasets
     from sklearn.preprocessing import StandardScaler
     from sklearn.metrics import confusion_matrix
-
-    fp_ls = []   
-    fn_ls = []
+    from sklearn import metrics                                                                                 
+    
+    fpr, tpr, thresholds = metrics.roc_curve(Y_data, model_lg.predict_proba(X_std)[:,1])
+    plt.plot(fpr, tpr) 
+    #fp_ls = []   
+    #fn_ls = []
    
-    for thrshld in np.linspace(0.0, 1.0, num=n_points):
-        Y_pred = ((model.predict_proba(X_std))[:,1]+thrshld).astype(int)
-        con_mat = confusion_matrix(Y_data, Y_pred)
-        falso_negativo = con_mat[1,0]/float(sum(con_mat[1,:]))
-        falso_positivo = con_mat[0,1]/float(sum(con_mat[0,:]))
-        fn_ls.append(falso_negativo)
-        fp_ls.append(falso_positivo)
+    #for thrshld in np.linspace(0.0, 1.0, num=n_points):
+    #    Y_pred = ((model.predict_proba(X_std))[:,1]+thrshld).astype(int)
+    #    con_mat = confusion_matrix(Y_data, Y_pred)
+    #    falso_negativo = con_mat[1,0]/float(sum(con_mat[1,:]))
+    #    falso_positivo = con_mat[0,1]/float(sum(con_mat[0,:]))
+    #    fn_ls.append(falso_negativo)
+    #    fp_ls.append(falso_positivo)
 
 
-    plt.plot(np.array(fp_ls),1.-np.array(fn_ls),color='red', linestyle='dashed', marker='o',markerfacecolor='blue', markersize=12)
+    #plt.plot(np.array(fp_ls),1.-np.array(fn_ls),color='red', linestyle='dashed', marker='o',markerfacecolor='blue', markersize=12)
     plt.xlabel('False Positive / (Flase Pos + True Negative)')
     plt.ylabel('True Positive / (False Negative + True Positive)')
     plt.show()
@@ -190,7 +193,7 @@ def read_discr_data():
 
     return pos_data, neg_data
 
-def get_relevant_att(pos_data, neg_data):
+def get_relevant_att(pos_data, neg_data, p_thr = 0.05):
     """ Returns a list with the relevant attributes 
     T-test is performed with a significance of 0.05"""
     from scipy.stats import ttest_ind 
@@ -204,7 +207,7 @@ def get_relevant_att(pos_data, neg_data):
         if np.mod(i_att,2) == 0:
             continue
         p_val = ttest_ind(neg_data.iloc[:,i_att],pos_data.iloc[:,i_att],equal_var=False,nan_policy='omit')[1]
-        if p_val < 0.05:
+        if p_val < p_thr:
             rel_att.append(i_att)
             neg_nan_pctg = 100. * ( 1. - neg_data.iloc[:,i_att].count() / float(n_neg) )
             pos_nan_pctg = 100. * ( 1. - pos_data.iloc[:,i_att].count() / float(n_pos) )
