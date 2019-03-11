@@ -77,54 +77,103 @@
 
 \begin_body
 
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+twocolumn[
+\end_layout
+
+\begin_layout Plain Layout
+
+  %
+\backslash
+begin{@twocolumnfalse} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Title
-Saving Backup Space with Machine Learning
+Using a predictive maintenance model of hard drive disks failure to back
+ up data in a cost-efective way.
 \end_layout
 
 \begin_layout Author
 Kevin Speyer and Hernán Resnizky
 \end_layout
 
-\begin_layout Address
-Cybertec
-\end_layout
-
 \begin_layout Abstract
+\paragraph_spacing single
 We use real data from the Self-Monitoring, Analysis and Reporting Technology
- of Hard Drive Discs to train a machine learning model and predict the probabili
-ty of failure of HDD.
+ (S.M.A.R.T) of Hard Drive Discs to train a machine learning model and predict
+ the probability of failure of HDD.
  After comparing various models, including Random Forest, Naive Bayes, Nearest
  Neighbors among others, we came up with a high accuracy (area under the
  ROC curve 
 \begin_inset Formula $=0.78\pm0.04$
 \end_inset
 
-) model, which is fast to train and predict.
+) model, which is fast to train and to predict with.
  The data is specially challenging, given that there is a high imbalance
- between positive and negative classes 
+ between positive and negative classes (
 \begin_inset Formula $positive/negative<10^{-4}$
 \end_inset
 
-, and there are few positive cases.
- 
+), and there are few positive cases.
+ A dimensionality reduction method is developed to retain only the useful
+ attributes and avoid unnecessary calculations, shortening the training
+ and testing times.
 \end_layout
 
 \begin_layout Abstract
 We propose a smart implementation of the model to drastically reduce the
  number of HDD used to backup data, with a small increase in the risk of
  losing data.
- achieve a high accuracy to mark the 50% most probable disk to fail.
- We propose an economic, smart, green friendly way to backup data, where
- less than 50% of the discs are used compared to normal backup methods.
- Backing up only the 50% of data in 
-\begin_inset Quotes eld
+ Applying the model developed in this work, it is possible lessen the number
+ of backup discs by 50%, with a probability increase of only 9% to have
+ a failure on non backed-up Discs.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{@twocolumnfalse} 
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+bigskip
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+bigskip
+\end_layout
+
+\begin_layout Plain Layout
+
+%]
+\end_layout
+
 \end_inset
 
-riksy
-\begin_inset Quotes erd
-\end_inset
 
- HDD it is possible 
 \end_layout
 
 \begin_layout Standard
@@ -134,34 +183,429 @@ Intro:
 \begin_layout Standard
 S.M.A.R.T.
  (Self-Monitoring, Analysis and Reporting Technology; often written as SMART)
- is a monitoring system included in computer hard disk drives (HDDs), solid-stat
-e drives (SSDs),[1] and eMMC drives.
- Its primary function is to detect and report various indicators of drive
+ is a monitoring system included in computer hard disk drives (HDDs) and
+ solid-state drives (SSDs) drives.
+ Its primary function is to measure and save various indicators of drive
  reliability with the intent of anticipating imminent hardware failures.
+ Several attributes are evaluated to keep track of the state of the Disks.
+ Some of this include: power cycle count, temperature, Distance the disk
+ has shifted relative to the spindle, resistance caused by friction in mechanica
+l parts while operating, etc.
+ It is not evident to know in advance which categories are indicatives of
+ imminent failure of the HDD, and which ones are uncorrelated with the health
+ status of the disks.
+ Unfortunately, the S.M.A.R.T attributes are not comparable among different
+ manufacturers, or even different model from the same manufacturer.
+ Although, there is a standard for this attributes, implementations between
+ manufacturers still differ and in some cases may lack some basic features
+ or only include a few select attributes.
+ Another common inconvenient of the S.M.A.R.T.
+ technology is the difficulty to access the data depends on the hardware
+ compatibility with de HDD, and the operating system used.
 \end_layout
 
 \begin_layout Standard
-When S.M.A.R.T.
- data indicates a possible imminent drive failure, software running on the
- host system may notify the user so preventative action can be taken to
- prevent data loss, and the failing drive can be replaced and data integrity
- maintained.
+In this work, we developed a statistical model from a large dataset to identify
+ the Disks that fail.
+ The data was taken from: 
+\shape italic
+https://www.backblaze.com/b2/hard-drive-test-data.html
+\shape default
+, and the problem was inspired by a kaggle post: 
+\shape italic
+https://www.kaggle.com/backblaze/hard-drive-test-dat
+\shape default
+a.
+ The data is 1.2GB, has 90 columns (attributes) for 3179296 instances.
+ Aside from the S.M.A.R.T data, there is available information such as date,
+ serial number, model, capacity, and of course failure status.
+ A value of 1 in the field 
+\begin_inset Quotes eld
+\end_inset
+
+failure status
+\begin_inset Quotes erd
+\end_inset
+
+ means a filed disk, while 0 is a healthy disk.
+ 
 \end_layout
 
 \begin_layout Standard
-Unbalanced data
+The first step is to load and explore the dataset.
+ The S.M.A.R.T features are given in a comma separated values (csv) format,
+ which can be loaded directly with the pandas module to work in python.
 \end_layout
 
 \begin_layout Standard
-logistic regression
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def read_discr_data():     
+\end_layout
+
+\begin_layout Plain Layout
+
+    """ Read data, keep just 1 model and return 
+\end_layout
+
+\begin_layout Plain Layout
+
+	2 sets discriminated by label"""
+\end_layout
+
+\begin_layout Plain Layout
+
+    #Get all data      
+\end_layout
+
+\begin_layout Plain Layout
+
+	all_data = pd.read_csv('harddrive.csv')
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+	# Get most used model     
+\end_layout
+
+\begin_layout Plain Layout
+
+	most_used_model = ((all_data.model.value_counts() 
+\end_layout
+
+\begin_layout Plain Layout
+
+    / all_data.shape[0])[0:1]).index[0]      
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+	# Get data only for most used model 
+\end_layout
+
+\begin_layout Plain Layout
+
+    ST400_data = all_data[ all_data.model == most_used_model ]
+\end_layout
+
+\begin_layout Plain Layout
+
+    neg_data = ST400_data[ST400_data.failure == 0 ]
+\end_layout
+
+\begin_layout Plain Layout
+
+    pos_data = ST400_data[ST400_data.failure == 1 ]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    return pos_data, neg_data     
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Exploration of data:
+As mentioned before, the S.M.A.R.T features are not comparable between different
+ models or manufacturers, so it is convenient to stay with just one model.
+ We chose to analyze the model of HDD with the most number of rows, in order
+ to have the highest number of instances possible.
+ After filtering the model the desired model, we discriminate the data by
+ the failure label.
+ Positive data is the one that is labeled as 1 in the 
+\begin_inset Quotes eld
+\end_inset
+
+failure
+\begin_inset Quotes erd
+\end_inset
+
+ field, and negative data is the one labeled with 0 in the same field.
 \end_layout
 
 \begin_layout Standard
-PDF
+Now we can explore the differences between both classes.
+ First, we can check the ration of instances that we have in each class:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+>>> pos_data.shape[0]/float(neg_data.shape[0])
+\end_layout
+
+\begin_layout Plain Layout
+
+1.45e-5
+\end_layout
+
+\end_inset
+
+You don't get more imbalanced classes than this! For every failed disk data,
+ there is around 
+\begin_inset Formula $\sim10,000$
+\end_inset
+
+ instances of healthy HDD.
+ To make the situation worse, there are only 
+\begin_inset Formula $146$
+\end_inset
+
+ failed disk instances to work with.
+ It is evident that we will need to make some effort to get a highly accurate
+ model from this dataset.
+\end_layout
+
+\begin_layout Standard
+There is no way to know beforehand which attributes are relevant to the
+ problem.
+ Keeping all attributes just in case is a lazy strategy that will not pay
+ off, as it will slow down calculations.
+ The dimensionality of the problem may be unnecessarily high, and we need
+ to identify the features that behave differently between classes.
+ There are a lot of possibilities on how to achieve this, but in this case
+ we went with a classic: the t-test.
+ This is a statistical test, that gives the likelihood of two samples having
+ the same mean value.
+ A low value of this test (e.g.: 
+\begin_inset Formula $p<0.05$
+\end_inset
+
+) strongly suggest that the both groups of data come from distributions
+ with different mean values.
+ By performing this kind of test for each attribute, and dividing the groups
+ by the failure label, we can identify the features that have a different
+ mean value depending on the status of the disk.
+ In particular, we used Welch's t-test, because we do not have information
+ of the variance of the distributions of the attributes.
+ 
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def get_relevant_att(pos_data, neg_data, p_thr = 0.05):
+\end_layout
+
+\begin_layout Plain Layout
+
+    """ Returns a list with the relevant attributes
+\end_layout
+
+\begin_layout Plain Layout
+
+    T-test is performed with a significance of 0.05"""
+\end_layout
+
+\begin_layout Plain Layout
+
+    from scipy.stats import ttest_ind
+\end_layout
+
+\begin_layout Plain Layout
+
+    n_pos = pos_data.shape[0]
+\end_layout
+
+\begin_layout Plain Layout
+
+    n_neg = neg_data.shape[0]
+\end_layout
+
+\begin_layout Plain Layout
+
+    rel_att = []
+\end_layout
+
+\begin_layout Plain Layout
+
+    for i_att in range(5,pos_data.shape[1]-5):
+\end_layout
+
+\begin_layout Plain Layout
+
+        if np.mod(i_att,2) == 0: #skip RAW data
+\end_layout
+
+\begin_layout Plain Layout
+
+            continue         
+\end_layout
+
+\begin_layout Plain Layout
+
+		p_val = ttest_ind(neg_data.iloc[:,i_att],pos_data.iloc[:,i_att],equal_var=False,
+nan_policy='omit')[1]
+\end_layout
+
+\begin_layout Plain Layout
+
+        if p_val < p_thr:
+\end_layout
+
+\begin_layout Plain Layout
+
+            rel_att.append(i_att)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    return rel_att 
+\end_layout
+
+\end_inset
+
+Another test that can extract the defining features of the data, is the
+ F-test, which can be used to check whether two groups of data have the
+ same variance.
+\end_layout
+
+\begin_layout Standard
+"A picture is worth a thousand words" prays the idiom, and it can not be
+ highlighted enough.
+ It is always good practice to observe data by presenting nice colored plots.
+ First, let's see the probability distribution functions of some of the
+ relevant attributes, discriminated by class.
+ In Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:PDFs"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, we present the probability density function of two attributes named 
+\begin_inset Quotes eld
+\end_inset
+
+smart_3_normalized
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+smart_9_normalized
+\begin_inset Quotes erd
+\end_inset
+
+, for the positive (green 
+\begin_inset Quotes eld
+\end_inset
+
++
+\begin_inset Quotes erd
+\end_inset
+
+ symbols) and the negative (red circles) classes.
+ We can observe from these plots, that, statistically, the values adopted
+ by this attributes are different, depending on the status of the disc.
+ For example, failed discs tend to have lower values of the feature 
+\begin_inset Quotes eld
+\end_inset
+
+smart_3_normalized
+\begin_inset Quotes erd
+\end_inset
+
+, than healthy disks, and can be used as an indicator of disk's status.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename PDF_s3.png
+	lyxscale 40
+	width 85col%
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename PDF_s9.png
+	lyxscale 40
+	width 85col%
+	clip
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:PDFs"
+
+\end_inset
+
+Probability density function calculated for two different attributes.
+ The red circles correspond to the healthy disks, while the green plus symbols
+ correspond to the failed disks.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -173,7 +617,11 @@ results:
 \end_layout
 
 \begin_layout Standard
-ROC curve
+Model comparisson
+\end_layout
+
+\begin_layout Standard
+ROC curves
 \end_layout
 
 \begin_layout Standard

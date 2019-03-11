@@ -1,0 +1,201 @@
+0.05
+The AUC of the ROC curve is between:
+0.7182995300295334  and  0.8746116901721146
+With a 95% confidence
+0.050918367346938775
+The AUC of the ROC curve is between:
+0.7206749158337712  and  0.8753308530357039
+With a 95% confidence
+0.051836734693877555
+The AUC of the ROC curve is between:
+0.7190087097488862  and  0.8282923563492028
+With a 95% confidence
+0.05275510204081633
+The AUC of the ROC curve is between:
+0.7028220919149083  and  0.8668086257873816
+With a 95% confidence
+0.05367346938775511
+The AUC of the ROC curve is between:
+0.7535589821870424  and  0.8546921901494652
+With a 95% confidence
+0.05459183673469388
+The AUC of the ROC curve is between:
+0.7065785506252961  and  0.8431088064798723
+With a 95% confidence
+0.05551020408163265
+The AUC of the ROC curve is between:
+0.7201024772858109  and  0.8653647887604727
+With a 95% confidence
+0.05642857142857143
+The AUC of the ROC curve is between:
+0.6955232678277807  and  0.8626300559083728
+With a 95% confidence
+0.057346938775510205
+The AUC of the ROC curve is between:
+0.7207175424166244  and  0.8302017392667721
+With a 95% confidence
+0.058265306122448984
+The AUC of the ROC curve is between:
+0.7035847041567631  and  0.8802351964796544
+With a 95% confidence
+0.05918367346938776
+The AUC of the ROC curve is between:
+0.6807039008670583  and  0.8961808122815111
+With a 95% confidence
+0.06010204081632653
+The AUC of the ROC curve is between:
+0.7466848762172889  and  0.8426751517639419
+With a 95% confidence
+0.06102040816326531
+The AUC of the ROC curve is between:
+0.708371984430323  and  0.8286268260890107
+With a 95% confidence
+0.06193877551020408
+The AUC of the ROC curve is between:
+0.7087996619548376  and  0.8525170163007201
+With a 95% confidence
+0.06285714285714286
+The AUC of the ROC curve is between:
+0.7226709334460257  and  0.849565114317754
+With a 95% confidence
+0.06377551020408163
+The AUC of the ROC curve is between:
+0.743712951303951  and  0.8537487785365113
+With a 95% confidence
+0.0646938775510204
+The AUC of the ROC curve is between:
+0.729724827532229  and  0.849906694382291
+With a 95% confidence
+0.0656122448979592
+The AUC of the ROC curve is between:
+0.720423832377115  and  0.8536970106782129
+With a 95% confidence
+0.06653061224489797
+The AUC of the ROC curve is between:
+0.7459150333070402  and  0.8768648294752327
+With a 95% confidence
+0.06744897959183674
+The AUC of the ROC curve is between:
+0.7257235586982129  and  0.8195465451512634
+With a 95% confidence
+0.06836734693877551
+The AUC of the ROC curve is between:
+0.7382322996717261  and  0.8360173305463763
+With a 95% confidence
+0.06928571428571428
+The AUC of the ROC curve is between:
+0.7124562673957442  and  0.8799475169235842
+With a 95% confidence
+0.07020408163265307
+The AUC of the ROC curve is between:
+0.7252357302228648  and  0.8287019675632558
+With a 95% confidence
+0.07112244897959184
+The AUC of the ROC curve is between:
+0.7418308697334369  and  0.8664547701123221
+With a 95% confidence
+0.07204081632653062
+The AUC of the ROC curve is between:
+0.7540388881317296  and  0.8468062770013424
+With a 95% confidence
+0.07295918367346939
+The AUC of the ROC curve is between:
+0.7320039026456152  and  0.8381430279259031
+With a 95% confidence
+0.07387755102040816
+The AUC of the ROC curve is between:
+0.7403560328549724  and  0.8639044608740521
+With a 95% confidence
+0.07479591836734695
+The AUC of the ROC curve is between:
+0.7112794058561792  and  0.8617522254215776
+With a 95% confidence
+0.07571428571428572
+The AUC of the ROC curve is between:
+0.7199132263002956  and  0.8595076635303609
+With a 95% confidence
+0.07663265306122449
+The AUC of the ROC curve is between:
+0.7364295912055512  and  0.8361601443044435
+With a 95% confidence
+0.07755102040816327
+The AUC of the ROC curve is between:
+0.7211902408908425  and  0.8387189970239798
+With a 95% confidence
+0.07846938775510204
+The AUC of the ROC curve is between:
+0.7519277266011047  and  0.8476864453913343
+With a 95% confidence
+0.07938775510204082
+The AUC of the ROC curve is between:
+0.7336258087262327  and  0.8319106639668766
+With a 95% confidence
+0.0803061224489796
+The AUC of the ROC curve is between:
+0.7331211987773327  and  0.8690391651525935
+With a 95% confidence
+0.08122448979591837
+The AUC of the ROC curve is between:
+0.7036275857043309  and  0.8761704296775227
+With a 95% confidence
+0.08214285714285714
+The AUC of the ROC curve is between:
+0.7387150676185852  and  0.8763203328035933
+With a 95% confidence
+0.08306122448979592
+The AUC of the ROC curve is between:
+0.7222427594599367  and  0.8742247747023423
+With a 95% confidence
+0.0839795918367347
+The AUC of the ROC curve is between:
+0.7305575179237264  and  0.8436500401493207
+With a 95% confidence
+0.08489795918367346
+The AUC of the ROC curve is between:
+0.7368096414098143  and  0.8568992043718447
+With a 95% confidence
+0.08581632653061225
+The AUC of the ROC curve is between:
+0.7481821344181543  and  0.8632437644760556
+With a 95% confidence
+0.08673469387755102
+The AUC of the ROC curve is between:
+0.7037264682373819  and  0.8675983430158197
+With a 95% confidence
+0.08765306122448979
+The AUC of the ROC curve is between:
+0.7324350701520582  and  0.8557117377074371
+With a 95% confidence
+0.08857142857142858
+The AUC of the ROC curve is between:
+0.7291694144565005  and  0.8632808725182507
+With a 95% confidence
+0.08948979591836734
+The AUC of the ROC curve is between:
+0.727805013722998  and  0.8592268394010975
+With a 95% confidence
+0.09040816326530612
+The AUC of the ROC curve is between:
+0.7095011064679221  and  0.8738830284764106
+With a 95% confidence
+0.0913265306122449
+The AUC of the ROC curve is between:
+0.6975077764681509  and  0.878876741528292
+With a 95% confidence
+0.09224489795918367
+The AUC of the ROC curve is between:
+0.7210598848468631  and  0.8656110465679071
+With a 95% confidence
+0.09316326530612246
+The AUC of the ROC curve is between:
+0.7202646217478413  and  0.8588921435278772
+With a 95% confidence
+0.09408163265306123
+The AUC of the ROC curve is between:
+0.7507329292391237  and  0.8450356664244761
+With a 95% confidence
+0.095
+The AUC of the ROC curve is between:
+0.7693369242032011  and  0.8491558069119451
+With a 95% confidence
+

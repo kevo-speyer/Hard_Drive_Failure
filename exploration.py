@@ -185,6 +185,7 @@ def read_discr_data():
 
     # Get most used model
     most_used_model = ((all_data.model.value_counts() / all_data.shape[0])[0:1]).index[0]
+    
     # Get data only for most used model
     ST400_data = all_data[ all_data.model == most_used_model ]
 
@@ -222,6 +223,35 @@ def get_relevant_att(pos_data, neg_data, p_thr = 0.05):
     return rel_att    
 
 
+def get_relevant_att_var(pos_data, neg_data, p_thr = 0.05):
+    """ Returns a list with the relevant attributes
+    T-test is performed with a significance of 0.05"""
+    from scipy.stats import ttest_ind
+
+    n_pos = pos_data.shape[0]
+    n_neg = neg_data.shape[0]
+
+    rel_att = []
+
+    for i_att in range(5,pos_data.shape[1]-5):
+        if np.mod(i_att,2) == 0:
+            continue
+        p_val = scipy.stats.levene(neg_data.iloc[:,i_att],pos_data.iloc[:,i_att])[1]
+        if p_val < p_thr:
+            rel_att.append(i_att)
+            neg_nan_pctg = 100. * ( 1. - neg_data.iloc[:,i_att].count() / float(n_neg) )
+            pos_nan_pctg = 100. * ( 1. - pos_data.iloc[:,i_att].count() / float(n_pos) )
+            print "Relevant Attribute: ", i_att
+            print "With p-value: ", p_val
+            print "Nan % in healthy discs: " ,neg_nan_pctg
+            print "Nan % in failure discs: " ,pos_nan_pctg
+            print "Mean value for healthy HDD:",neg_data.iloc[:,i_att].mean(),"+/-", neg_data.iloc[:,i_att].std()
+            print "Mean value for failure HDD:",pos_data.iloc[:,i_att].mean(),"+/-",pos_data.iloc[:,i_att].std()
+            print ""
+
+    return rel_att
+
+
 #def get_rel_att_2(pos_data, neg_data):
 #    """The idea is to extract the attributes by comparing the probability distributions
 #    in each group"""
@@ -252,7 +282,7 @@ def get_corr_mat(ST400_data,rel_att):
 def plot_distros(rel_att,pos_data,neg_data):
     """Plot the histograms of each of the relative attributes, discriminated by label of failure"""
     for i_att in rel_att:
-        plt.plot(neg_data.iloc[:,i_att].value_counts()/neg_data.shape[0],'ro',pos_data.iloc[:,i_att].value_counts()/pos_data.shape[0],'gP')
+        plt.plot(neg_data.iloc[:,i_att].value_counts()/neg_data.shape[0],'ro',s=20,pos_data.iloc[:,i_att].value_counts()/pos_data.shape[0],'gP')
         plt.ylabel('probability')
         plt.xlabel(neg_data.columns[i_att])
         plt.show()    
